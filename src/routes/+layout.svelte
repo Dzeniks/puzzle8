@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.postcss';
-
+	import { AppShell } from '@skeletonlabs/skeleton';
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
 	import 'highlight.js/styles/github-dark.css';
@@ -23,5 +23,5 @@
 
 </script>
 
-
 <slot />
+

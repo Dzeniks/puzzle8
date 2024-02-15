@@ -1,38 +1,68 @@
 <script lang="ts">
-	import { State } from '$lib/puzzle8/State';
-	import { Puzzle } from '$lib/puzzle8/NPuzzle';
+	import { aStar } from '$lib/puzzle8/aStar';
+	import type { PuzzleState, SolverResult } from '$lib/puzzle8/types';
 	import Grid from '$lib/components/Grid.svelte';
 	let puzzle: number[] = [0, 2, 3, 1, 5, 6, 4, 7, 8];
-	let end: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+	let goal: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 0];
 
 	let steps: number[][];
 	let size = 3;
 
 	function AStart() {
-		let puzzle2d: number[][] = [];
+		let init2d: number[][] = [];
 		for (let i = 0; i < 3; i++) {
-			puzzle2d.push(puzzle.slice(i * 3, i * 3 + 3));
+			init2d.push(puzzle.slice(i * 3, i * 3 + 3));
 		}
 
-		let end2d: number[][] = [];
+		let goal2d: number[][] = [];
 		for (let i = 0; i < 3; i++) {
-			end2d.push(end.slice(i * 3, i * 3 + 3));
+			goal2d.push(goal.slice(i * 3, i * 3 + 3));
 		}
 
-		const start = new State(puzzle2d, 0, 0);
-		const puz = new Puzzle(3);
-		const steps2d = puz.process(start, end2d, max_iter);
+		const initialState: PuzzleState = {
+			board: init2d, cost: 0,
+			parent: null
+		};
 
-		steps = steps2d.map((step) => {
-			return step.flat();
-		});
+		const goalState: PuzzleState = {
+			board: goal2d, cost: 0,
+			parent: null
+		};
+
+		const solution : SolverResult  = aStar(initialState, goalState, max_iter);
+		if (!solution.path) {
+			alert("No solution found in range of maximum of itereration. Try increasing maximum of itereration");
+		}
+
+		steps = solution.path ? solution.path.map((x) => {
+			let arr: number[] = [];
+			for (let i = 0; i < 3; i++) {
+				arr = arr.concat(x.board[i]);
+			}
+			return arr;
+		}) : [];
+	}
+
+	function insertPuzzleByString() {
+		let puzzle_string: string | null = prompt("Enter the puzzle string");
+		console.log(puzzle_string);
+		if (!puzzle_string) return;
+		puzzle = puzzle_string.split("").map((x) => parseInt(x));
+		
+	}
+
+	function insertGoalByString() {
+		let goal_string: string | null = prompt("Enter the goal string");
+		console.log(goal_string);
+		if (!goal_string) return;
+		goal = goal_string.split("").map((x) => parseInt(x));
 	}
 
 
 	function countNumbersInPlace() {
 		let count = 0;
 		for (let i = 0; i < puzzle.length; i++) {
-			if (puzzle[i] === end[i]) {
+			if (puzzle[i] === goal[i]) {
 				count++;
 			}
 		}
@@ -52,10 +82,11 @@
 </script>
 
 <section class="flex flex-col md:flex-row md:pl-16">
-	<div class="h-screen flex flex-col items-center justify-center space-y-8 p-4">
+	<div class="h-screen flex flex-col items-center justify-center space-y-4 md:space-y-8">
 		<h1 class="h1">Puzzle8</h1>
-		<h2>Options</h2>
-		<label for="algorithm"
+		<div>
+			<h2>Options</h2>
+			<label for="algorithm"
 			>Algorithm: <select
 				bind:value={selected}
 				class="rounded bg-transparent text-center"
@@ -66,19 +97,25 @@
 					</option>
 				{/each}
 			</select>
-		</label>
-		<label for="max_iter"
-			>Max Iteration: <input
-				type="number"
-				bind:value={max_iter}
-				class="border border-gray-300 rounded bg-transparent text-center w-24"
-			/></label
-		>
-		<h2>Start</h2>
+			</label>
+			<label for="max_iter"
+				>Maximum of iterations: <input
+					type="number"
+					bind:value={max_iter}
+					class="border border-gray-300 rounded bg-transparent text-center w-24"
+				/></label
+			>
+		</div>
+		
+		<h2>Initial state</h2>
 		<Grid bind:gridData={puzzle} {size} disableItem={false}></Grid>
+		<button on:click={insertPuzzleByString}>Insert initial state by string</button>
+
 		<h2>Goal</h2>
-		<Grid bind:gridData={end} {size} disableItem={true}></Grid>
+		<Grid bind:gridData={goal} {size} disableItem={false}></Grid>
+		<button on:click={insertGoalByString}>Insert goal by string</button>
 		<button on:click={selected["func"]}>Solve Puzzle</button>
+
 		<p>Numbers in place: {countNumbersInPlace()}</p>
 	</div>
 	{#if steps && steps.length > 0}
@@ -97,3 +134,12 @@
 		</div>
 	{/if}
 </section>
+
+<style>
+
+	button:hover {
+		background-color: cornflowerblue;
+		
+	}
+</style>
+
