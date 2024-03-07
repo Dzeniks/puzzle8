@@ -21,11 +21,11 @@ export function aStar(initialState: PuzzleState, goalState: PuzzleState, maxIter
     const visited = new Set<string>();
     const frontier = new PriorityQueue<PuzzleState>();
     frontier.enqueue(manhattanDistance(initialState), initialState);
-    let iter = 0;
+    let iteration = 0;
     while (!frontier.isEmpty()) {
-        iter++;
-        if (iter > maxIter) {
-            return {path: null, iteration: iter, visited: visited.size};
+        iteration++;
+        if (iteration > maxIter) {
+            return {path: null, iteration: iteration, visited: visited.size};
         }
         const currentState = frontier.dequeue()!;
         if (isEqual(currentState, goalState)) {
@@ -35,7 +35,7 @@ export function aStar(initialState: PuzzleState, goalState: PuzzleState, maxIter
                 path.unshift(current);
                 current = current.parent || null;
             }
-            return {path, iter, visited: visited.size};
+            return {path, iteration, visited: visited.size};
         }
         visited.add(JSON.stringify(currentState.board));
         const succ = generateChildrens(currentState);
@@ -45,5 +45,5 @@ export function aStar(initialState: PuzzleState, goalState: PuzzleState, maxIter
             }
         }
     }
-    return {path: null, iter, visited: visited.size};
+    return {path: null, iteration, visited: visited.size};
 }
