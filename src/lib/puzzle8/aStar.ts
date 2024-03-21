@@ -35,6 +35,7 @@ export function aStar(initialState: PuzzleState, goalState: PuzzleState, maxIter
                 path.unshift(current);
                 current = current.parent || null;
             }
+            console.log('visited', visited.size, 'iteration', iteration, 'open states', frontier.heap.length)
             return {path, iteration, visited: visited.size};
         }
         visited.add(JSON.stringify(currentState.board));

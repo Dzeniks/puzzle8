@@ -1,28 +1,19 @@
-# create-svelte
+# Puzzle8 solver
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+## Description
+Project include A* star algorithm with GUI for solving varies of Puzzle8
 
-## Creating a project
+## Install and run
 
-If you're seeing this, you've probably already done this step. Congrats!
+To install and prepare project
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+npm install
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
+To run locally
 ```bash
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
 ## Building
@@ -35,4 +26,8 @@ npm run build
 
 You can preview the production build with `npm run preview`.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## Images of project
+
+![img.png](img.png)
+
+![img_1.png](img_1.png)
